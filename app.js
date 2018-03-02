@@ -10,7 +10,7 @@ Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
     var o_id = tweet.in_reply_to_status_id_str;
 
     if (o_id != null) {
-      Twitter.get('statuses/show', {id: o_id, include_ext_alt_text: 'true'}, function(err, o_tweet){
+      Twitter.get('statuses/show', {id: o_id, include_ext_alt_text: 'true', tweet_mode: 'extended'}, function(err, o_tweet){
         if(err) {
           console.log(err);
         }
