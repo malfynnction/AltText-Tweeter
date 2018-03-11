@@ -5,33 +5,38 @@ var Twitter = new TwitterP(keys);
 
 Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
   stream.on('data', function(tweet) {
-    var m_id = tweet.id_str;
-    var m_us = tweet.user.screen_name;
-    var o_id = tweet.in_reply_to_status_id_str;
 
-    if (o_id == null) {
-      o_id = m_id;
-    }
+    // do not reply to retweets
+    if (typeof tweet.retweeted_status === 'undefined') {
 
-    Twitter.get('statuses/show', {id: o_id, include_ext_alt_text: 'true', tweet_mode: 'extended'}, function(err, o_tweet){
-      if(err) {
-        console.log(err);
+      var m_id = tweet.id_str;
+      var m_us = tweet.user.screen_name;
+      var o_id = tweet.in_reply_to_status_id_str;
+
+      if (o_id == null) {
+        o_id = m_id;
       }
 
-      if (o_tweet.extended_entities == undefined || o_tweet.extended_entities['media'] == undefined) {
-        tweetThis('You don\'t seem to be replying to a tweet containing an image.', m_id, m_us);
-      }
-
-      else {
-        var media = o_tweet.extended_entities['media'];
-        var cont = '';
-        for (var i = 0; i < media.length; i++) {
-          if (media.length > 1) cont += (i+1) + '. Pic: ' + media[i].ext_alt_text + '\n';
-          else cont += media[i].ext_alt_text;
+      Twitter.get('statuses/show', {id: o_id, include_ext_alt_text: 'true', tweet_mode: 'extended'}, function(err, o_tweet){
+        if(err) {
+          console.log(err);
         }
-        tweetThis(cont, m_id, m_us);
-      }
-    })
+
+        if (o_tweet.extended_entities == undefined || o_tweet.extended_entities['media'] == undefined) {
+          tweetThis('You don\'t seem to be replying to a tweet containing an image.', m_id, m_us);
+        }
+
+        else {
+          var media = o_tweet.extended_entities['media'];
+          var cont = '';
+          for (var i = 0; i < media.length; i++) {
+            if (media.length > 1) cont += (i+1) + '. Pic: ' + media[i].ext_alt_text + '\n';
+            else cont += media[i].ext_alt_text;
+          }
+          tweetThis(cont, m_id, m_us);
+        }
+      })
+    }
   });
 
   stream.on('err', function(err) {
@@ -40,6 +45,10 @@ Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
 });
 
 function tweetThis (content, to_id, to_us) {
+  if (to_us == 'get_altText') {
+    return;
+  }
+
   content = content.replace(/null/g, 'There is no alt text for this image, i\'m sorry.');
   
   var content = '@' + to_us + ' ' + content;
