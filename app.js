@@ -6,13 +6,19 @@ var Twitter = new TwitterP(keys);
 Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
   stream.on('data', function(tweet) {
 
-    // do not reply to retweets
-    if (typeof tweet.retweeted_status === 'undefined') {
+    // do not reply to retweets & don't get triggered by people who reply to the bot
+    if (typeof tweet.retweeted_status === 'undefined' && tweet.in_reply_to_screen_name !== 'get_altText') {
 
+      //the tweet that triggered the bot
       var m_id = tweet.id_str;
+      //the user who triggered the bot
       var m_us = tweet.user.screen_name;
+      //the original tweet (with the pic)
       var o_id = tweet.in_reply_to_status_id_str;
+      //the user who originally posted the pic
+      var o_us = tweet.in_reply_to_screen_name;
 
+      //ppl posting the pic and triggering the bot within the same tweet
       if (o_id == null) {
         o_id = m_id;
       }
@@ -23,7 +29,7 @@ Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
         }
 
         if (o_tweet.extended_entities == undefined || o_tweet.extended_entities['media'] == undefined) {
-          tweetThis('You don\'t seem to be replying to a tweet containing an image.', m_id, m_us);
+          tweetThis('You don\'t seem to be replying to a tweet containing an image.', m_id, m_us, o_us);
         }
 
         else {
@@ -33,7 +39,7 @@ Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
             if (media.length > 1) cont += (i+1) + '. Pic: ' + media[i].ext_alt_text + '\n';
             else cont += media[i].ext_alt_text;
           }
-          tweetThis(cont, m_id, m_us);
+          tweetThis(cont, m_id, m_us, o_us);
         }
       })
     }
@@ -44,12 +50,13 @@ Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
   });
 });
 
-function tweetThis (content, to_id, to_us) {
+function tweetThis (content, to_id, to_us, o_us) {
+  //pls no loops of death!
   if (to_us == 'get_altText') {
     return;
   }
 
-  content = content.replace(/null/g, 'There is no alt text for this image, i\'m sorry.');
+  content = content.replace(/null/g, 'There is no alt text for this image, i\'m sorry. @' + o_us + ' it\'d be cool if you added descriptions to your images in the future, so that users with a screenreader know what\'s shown, too! Here\'s how you can do that: https://help.twitter.com/en/using-twitter/picture-descriptions');
   
   var content = '@' + to_us + ' ' + content;
 
