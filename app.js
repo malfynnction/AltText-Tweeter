@@ -103,7 +103,7 @@ function tweetThis (content, to_id, to_us, o_us) {
     return;
   }
 
-  content = content.replace(/null/g, 'There is no alt text for this image, i\'m sorry. @' + o_us + ' it\'d be cool if you added descriptions to your images in the future, so that users with a screenreader know what\'s shown, too! Here\'s how you can do that: https://help.twitter.com/en/using-twitter/picture-descriptions');
+  content = content.replace(/null/g, 'There is no alt text for this image, i\'m sorry. @' + o_us + ' it\'d be cool if you added descriptions to your images in the future to improve the accessibility! Here\'s how you can do that: https://help.twitter.com/en/using-twitter/picture-descriptions');
   
   content = '@' + to_us + ' ' + content;
 
