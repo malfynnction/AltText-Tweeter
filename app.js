@@ -30,11 +30,51 @@ Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
           console.log(err);
         }
 
-        var content = read(o_tweet, m_id, m_us, o_us);
+        //no media in the original tweet
+        if (o_tweet.extended_entities == undefined || o_tweet.extended_entities['media'] == undefined) {
 
-        //check just to make sure that you're not stuck in that callback shit
-        if (content !== '') {
-          tweetThis(content, m_id, m_us, o_us);
+          //no media in the triggering tweet
+          if (tweet.extended_entities == undefined || tweet.extended_entities['media'] == undefined) {
+            
+            //in the quoted tweet?
+            if (tweet.is_quote_status) {
+              Twitter.get('statuses/show', {id: tweet.quoted_status_id_str, include_ext_alt_text: 'true', tweet_mode: 'extended'}, function(err, q_tweet){
+                
+                //no media in the quoted tweet
+                if (q_tweet.extended_entities == undefined || q_tweet.extended_entities['media'] == undefined) {
+                  tweetThis ('I can\'t find any images in the tweet you\'re replying to, nor in your own tweet or the tweet you quoted, sorry.', m_id, m_us, q_tweet.user.screen_name);
+                }
+
+                //found media in quoted tweet
+                else {
+                  var content = read(q_tweet, m_id, m_us, q_tweet.user.screen_name);
+                  if (content !== '') {
+                    tweetThis (content, m_id, m_us, q_tweet.user.screen_name);
+                  }
+                }
+              });
+            }
+
+            else {
+              tweetThis ('I can\'t find any images in the tweet you\'re replying to or in your own tweet, sorry.', m_id, m_us, m_us);
+            }
+
+          }
+          //found media in triggering tweet
+          else {
+            var content = read(tweet, m_id, m_us, m_us);
+            if (content != '') {
+              tweetThis(content, m_id, m_us, m_us);
+            }
+          }
+        }
+
+        //found media in original tweet
+        else {
+          var content = read(o_tweet, m_id, m_us, o_us);
+          if (content !== '') {
+            tweetThis(content, m_id, m_us, o_us);
+          }
         }
       });
     }
@@ -47,30 +87,10 @@ Twitter.stream('statuses/filter', {track: '@get_altText'}, function(stream) {
 
 function read (tw, m_id, m_us, o_us) {
   var alt = '';
-
-  //no media in this tweet
-  if (tw.extended_entities == undefined || tw.extended_entities['media'] == undefined) {
-    if (!tw.is_quote_status) {
-      alt += 'I can\'t find any image in that tweet, sorry.';
-    }
-    //maybe in the quoted tweet?
-    else {
-      Twitter.get('statuses/show', {id: tw.quoted_status_id_str, include_ext_alt_text: 'true', tweet_mode: 'extended'}, function(err, q_tweet){
-        if (err) {
-          console.log(err);
-        }
-
-        tweetThis (read(q_tweet, m_id, m_us, q_tweet.user.screen_name), m_id, m_us, q_tweet.user.screen_name);
-      });
-    }
-  }
-
-  else {
-    var media = tw.extended_entities['media'];
-    for (var i = 0; i < media.length; i++) {
-      if (media.length > 1) alt += (i+1) + '. Pic: ' + media[i].ext_alt_text + '\n';
-      else alt += media[i].ext_alt_text;
-    }
+  var media = tw.extended_entities['media'];
+  for (var i = 0; i < media.length; i++) {
+    if (media.length > 1) alt += (i+1) + '. Pic: ' + media[i].ext_alt_text + '\n';
+    else alt += media[i].ext_alt_text;
   }
 
   return alt;
