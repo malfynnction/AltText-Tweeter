@@ -5,11 +5,8 @@ var Twitter = new TwitterP(keys)
 
 Twitter.stream('statuses/filter', { track: '@get_altText' }, function(stream) {
   stream.on('data', function(tweet) {
-    // do not reply to retweets & don't get triggered by people who reply to the bot
-    if (
-      typeof tweet.retweeted_status === 'undefined' &&
-      tweet.in_reply_to_screen_name !== 'get_altText'
-    ) {
+    // do not reply to retweets
+    if (typeof tweet.retweeted_status === 'undefined') {
       var mentioning_id = tweet.id_str
       var mentioning_user = tweet.user.screen_name
       var original_id = tweet.in_reply_to_status_id_str
