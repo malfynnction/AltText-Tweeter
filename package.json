@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "npm": "^5.7.1",
+    "npm": "^6.9.0",
     "twitter": "^1.7.1"
   },
   "devDependencies": {},
