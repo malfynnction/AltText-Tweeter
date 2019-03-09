@@ -1,5 +1,9 @@
+const TwitterP = require('twitter')
+const keys = require('./keys')
+
+const Twitter = new TwitterP(keys)
+
 const tweetThis = (content, toriginal_id, mentioning_user) => {
-  
   if (content.length <= 280) {
     const reply = { status: content, in_reply_to_status_id: toriginal_id }
     Twitter.post('statuses/update', reply, function(err, tweet) {
