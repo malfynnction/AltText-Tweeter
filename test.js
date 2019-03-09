@@ -67,3 +67,8 @@ test('video', async t => {
   const reply = getReplyText(testTweets[12])
   t.is(await reply, `@souplemur ${video}`)
 })
+
+test('multiple images', async t => {
+  const reply = getReplyText(testTweets[13])
+  t.is(await reply, `@solitaryrainbow 1. Pic: ${noAltText} @ryanlcooper ${pleaseDoInTheFuture}\n2. Pic: ${noAltText} @ryanlcooper ${pleaseDoInTheFuture}\n3. Pic: ${noAltText} @ryanlcooper ${pleaseDoInTheFuture}\n`)
+})
