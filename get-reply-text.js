@@ -66,8 +66,12 @@ module.exports = (tweet) => {
         }
       }).catch(err => {
         console.log(err)
+        return content + "There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!"
       })
     } 
     return content + "I can't find any images in the tweet you're replying to or in your own tweet, sorry."
-  }).catch(err => console.log(err))
+  }).catch(err => {
+    console.log(err)
+    return content + "There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!"
+  })
 }
