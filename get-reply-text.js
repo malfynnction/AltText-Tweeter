@@ -2,6 +2,9 @@ const getTweet = require('./get-tweet')
 const read = require('./read-alt-text')
 
 module.exports = (tweet) => {
+  if (!tweet) {
+    return
+  }
   try {
     // do not reply to retweets
     if (typeof tweet.retweeted_status !== 'undefined') {
