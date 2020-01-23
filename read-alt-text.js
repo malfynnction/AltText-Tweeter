@@ -1,4 +1,3 @@
-
 module.exports = (tw, original_user) => {
   let alt = ''
 
@@ -14,7 +13,7 @@ module.exports = (tw, original_user) => {
     const media = tw.extended_entities['media']
     for (let i = 0; i < media.length; i++) {
       if (media.length > 1)
-        alt += i + 1 + '. Pic: ' + media[i].ext_alt_text + '\n'
+        alt += i + 1 + '. Picture: ' + media[i].ext_alt_text + '\n'
       else alt += media[i].ext_alt_text
     }
   }
