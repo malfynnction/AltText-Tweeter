@@ -35,7 +35,7 @@ test('image in quote, alt text', async t => {
 
 test('image in quote, no alt text', async t => {
   const reply = getReplyText(testTweets[6])
-  t.is(await reply, `@_cumasyouare_ ${noAltText} @blurryechopilot ${pleaseDoInTheFuture}`)
+  t.is(await reply, `@_cumasyouare_ ${noAltText} @BLURRYECHOPILOT ${pleaseDoInTheFuture}`)
 })
 
 test('no quote, no reply, no image', async t => {
