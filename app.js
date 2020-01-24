@@ -11,7 +11,9 @@ Twitter.stream('statuses/filter', { track: '@get_altText' }, function(stream) {
     const mentioning_user = tweet.user.screen_name
 
     getReplyText(tweet).then(reply => {
-      if (reply && reply.length > 0) sendTweet(reply, mentioning_id, mentioning_user)
+      if (reply && reply.length > 0) {
+        sendTweet(reply, mentioning_id, mentioning_user)
+      }
     })
 
   })
