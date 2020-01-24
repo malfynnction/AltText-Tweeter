@@ -3,7 +3,7 @@ const read = require('./read-alt-text')
 
 module.exports = (tweet) => {
 
-  return new Promise((resolve) => {
+  return new Promise(async resolve => {
     try {
       if (!tweet) {
         console.log('🚨This should not happen🚨')
