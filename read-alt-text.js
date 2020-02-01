@@ -1,8 +1,10 @@
 module.exports = (tw, original_user) => {
   let alt = ''
 
+  const supportedMediaTypes = ['photo', 'animated_gif']
+
   //unfortunately, it is impossible to add alt texts to videos or gifs
-  if (tw.extended_entities.media[0].type != 'photo') {
+  if (!supportedMediaTypes.includes(tw.extended_entities.media[0].type)) {
     alt =
       'This is a ' +
       tw.extended_entities.media[0].type +
@@ -20,8 +22,8 @@ module.exports = (tw, original_user) => {
 
   return alt.replace(
     /null/g,
-    "There is no alt text for this image, i'm sorry. @" +
+    "There is no alt text for this image, I'm sorry. @" +
       original_user +
-      " it'd be cool if you added descriptions to your images in the future to improve the accessibility! Here's how you can do that: https://help.twitter.com/en/using-twitter/picture-descriptions"
+      " please add descriptions to your images in the future to improve the accessibility! Here's how you can do that: https://help.twitter.com/en/using-twitter/picture-descriptions"
   )
 }
