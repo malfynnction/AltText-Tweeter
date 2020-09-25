@@ -2,18 +2,17 @@ const getTweet = require('./get-tweet')
 const read = require('./read-alt-text')
 
 module.exports = (tweet) => {
-
-  return new Promise(async resolve => {
+  return new Promise(async (resolve) => {
     try {
       if (!tweet) {
         console.log('🚨This should not happen🚨')
-        throw ('No tweet found')
+        throw 'No tweet found'
       }
 
       // do not reply to retweets
       if (typeof tweet.retweeted_status !== 'undefined') {
         resolve('')
-      } 
+      }
 
       const mentioning_id = tweet.id_str
       const mentioning_user = tweet.user.screen_name
@@ -25,10 +24,10 @@ module.exports = (tweet) => {
         original_id = mentioning_id
         original_user = mentioning_user
       }
-      
+
       //pls no loops of death!
       if (mentioning_user == 'get_altText') {
-        resolve('')
+        resolve()
       }
 
       let content = `@${mentioning_user} `
@@ -40,45 +39,39 @@ module.exports = (tweet) => {
         original_tweet.extended_entities &&
         original_tweet.extended_entities['media']
       ) {
-        content += read(
-          original_tweet,
-          original_user
-        )
+        content += read(original_tweet, original_user)
         resolve(content)
       }
 
       //media in the triggering tweet
       if (tweet.extended_entities && tweet.extended_entities['media']) {
-        content += read(
-          tweet,
-          mentioning_user
-        )
+        content += read(tweet, mentioning_user)
         resolve(content)
       }
 
       //in the quoted tweet?
       if (tweet.is_quote_status) {
         const quoted_tweet = await getTweet(tweet.quoted_status_id_str)
-          //media in the quoted tweet
-          if (
-            quoted_tweet.extended_entities &&
-            quoted_tweet.extended_entities['media']
-          ) {
-            content += read(
-              quoted_tweet,
-              quoted_tweet.user.screen_name
-            )
-            resolve(content)
-          } else {
-            //no media in quoted tweet
-            resolve(content + "I can't find any images in the tweet you're replying to, nor in your own tweet or the tweet you quoted, sorry.")
-          }
+        //media in the quoted tweet
+        if (
+          quoted_tweet.extended_entities &&
+          quoted_tweet.extended_entities['media']
+        ) {
+          content += read(quoted_tweet, quoted_tweet.user.screen_name)
+          resolve(content)
+        } else {
+          //no media in quoted tweet => no tweet
+          resolve()
+        }
       }
 
-      resolve(content + "I can't find any images in the tweet you're replying to or in your own tweet, sorry.")
+      resolve()
     } catch (err) {
       console.log(err)
-      resolve(content + "There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!")
+      resolve(
+        content +
+          'There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!'
+      )
     }
   })
 }
