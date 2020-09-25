@@ -61,16 +61,10 @@ module.exports = (tweet) => {
           resolve(content)
         } else {
           //no media in quoted tweet => no tweet
-          console.log(
-            `no media in tweet ${tweet.quoted_status_id_str} (triggered by ${mentioning_id}) - skipping.`
-          )
           resolve()
         }
       }
 
-      console.log(
-        `no media in tweet ${original_id} (triggered by ${mentioning_id}) - skipping.`
-      )
       resolve()
     } catch (err) {
       console.log(err)
