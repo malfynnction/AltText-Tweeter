@@ -10,7 +10,7 @@ module.exports = (tw, original_user) => {
       tw.extended_entities.media[0].type +
       ". Unfortunately, twitter doesn't allow to add alt texts for " +
       tw.extended_entities.media[0].type +
-      "s yet. \n @twitter, it'd be cool if you changed that!"
+      's yet.'
   } else {
     const media = tw.extended_entities['media']
     for (let i = 0; i < media.length; i++) {
@@ -20,10 +20,5 @@ module.exports = (tw, original_user) => {
     }
   }
 
-  return alt.replace(
-    /null/g,
-    "There is no alt text for this image, I'm sorry. @" +
-      original_user +
-      " please add descriptions to your images in the future to improve the accessibility! Here's how you can do that: https://help.twitter.com/en/using-twitter/picture-descriptions"
-  )
+  return alt.replace(/null/g, "There is no alt text for this image, I'm sorry.")
 }

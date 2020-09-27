@@ -3,10 +3,8 @@ const testTweets = require('./test-tweets.json')
 const getReplyText = require('./get-reply-text')
 
 const noAltText = "There is no alt text for this image, I'm sorry."
-const pleaseDoInTheFuture =
-  "please add descriptions to your images in the future to improve the accessibility! Here's how you can do that: https://help.twitter.com/en/using-twitter/picture-descriptions"
 const video =
-  "This is a video. Unfortunately, twitter doesn't allow to add alt texts for videos yet. \n @twitter, it'd be cool if you changed that!"
+  "This is a video. Unfortunately, twitter doesn't allow to add alt texts for videos yet."
 
 test('classic flow, with alt text', async (t) => {
   const reply = getReplyText(testTweets[1])
@@ -18,18 +16,12 @@ test('classic flow, with alt text', async (t) => {
 
 test('classic flow, no alt text', async (t) => {
   const reply = getReplyText(testTweets[2])
-  t.is(
-    await reply,
-    `@solitaryrainbow ${noAltText} @IAStartingLine ${pleaseDoInTheFuture}`
-  )
+  t.is(await reply, `@solitaryrainbow ${noAltText}`)
 })
 
 test('triggering = original, no alt text', async (t) => {
   const reply = getReplyText(testTweets[3])
-  t.is(
-    await reply,
-    `@womensart1 ${noAltText} @womensart1 ${pleaseDoInTheFuture}`
-  )
+  t.is(await reply, `@womensart1 ${noAltText}`)
 })
 
 test('triggering = original, with alt text', async (t) => {
@@ -50,10 +42,7 @@ test('image in quote, alt text', async (t) => {
 
 test('image in quote, no alt text', async (t) => {
   const reply = getReplyText(testTweets[6])
-  t.is(
-    await reply,
-    `@_cumasyouare_ ${noAltText} @BLURRYECHOPILOT ${pleaseDoInTheFuture}`
-  )
+  t.is(await reply, `@_cumasyouare_ ${noAltText}`)
 })
 
 test('no quote, no reply, no image', async (t) => {
@@ -93,6 +82,6 @@ test('multiple images', async (t) => {
   const reply = getReplyText(testTweets[13])
   t.is(
     await reply,
-    `@solitaryrainbow 1. Picture: ${noAltText} @ryanlcooper ${pleaseDoInTheFuture}\n2. Picture: ${noAltText} @ryanlcooper ${pleaseDoInTheFuture}\n3. Picture: ${noAltText} @ryanlcooper ${pleaseDoInTheFuture}\n`
+    `@solitaryrainbow 1. Picture: ${noAltText}\n2. Picture: ${noAltText}\n3. Picture: ${noAltText}\n`
   )
 })
