@@ -24,12 +24,13 @@ const tweetThis = (content, toriginal_id, mentioning_user) => {
     Twitter.post('statuses/update', reply, function (err, tweet) {
       if (err) {
         console.log(err)
+      } else {
+        tweetThis(
+          `@${mentioning_user} ${cont_arr.join(' ')}`,
+          tweet.id_str,
+          mentioning_user
+        )
       }
-      tweetThis(
-        `@${mentioning_user} ${cont_arr.join(' ')}`,
-        tweet.id_str,
-        mentioning_user
-      )
     })
   }
 }
