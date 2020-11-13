@@ -12,7 +12,7 @@ Twitter.stream('statuses/filter', { track: '@get_altText' }, function (stream) {
 
     getReplyText(tweet)
       .then((reply) => {
-        if (reply && reply.length > 0) {
+        if (reply && reply.length > 0 && reply !== 'undefined') {
           sendTweet(reply, mentioning_id, mentioning_user)
         }
       })

@@ -11,7 +11,7 @@ module.exports = (tweet) => {
 
       // do not reply to retweets
       if (typeof tweet.retweeted_status !== 'undefined') {
-        resolve('')
+        resolve()
       }
 
       const mentioning_id = tweet.id_str
