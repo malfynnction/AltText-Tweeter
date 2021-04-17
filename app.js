@@ -20,9 +20,9 @@ Twitter.stream('statuses/filter', { track: '@get_altText' }, function (stream) {
         })
         .catch((err) => console.error(err))
     })
+  })
 
-    stream.on('error', function (err) {
-      console.log(err)
-    })
+  stream.on('error', function (err) {
+    console.log(err)
   })
 })
