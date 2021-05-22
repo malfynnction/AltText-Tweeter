@@ -69,8 +69,7 @@ module.exports = (tweet) => {
     } catch (err) {
       console.log(err)
       resolve(
-        content +
-          'There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!'
+        'There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!'
       )
     }
   })
