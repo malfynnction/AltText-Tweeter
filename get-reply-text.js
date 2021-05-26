@@ -70,7 +70,7 @@ module.exports = (tweet) => {
     } catch (err) {
       console.log(err)
       if (err.length === 1) {
-        resolve(content + err[0].message)
+        resolve(content + err[0].message.replace('you are', 'I am'))
       } else {
         resolve(
           content +
