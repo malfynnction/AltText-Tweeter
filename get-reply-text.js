@@ -2,6 +2,11 @@ const getTweet = require('./get-tweet')
 const read = require('./read-alt-text')
 
 module.exports = (tweet) => {
+  const mentioning_id = tweet.id_str
+  const mentioning_user = tweet.user.screen_name
+
+  let content = `@${mentioning_user} `
+
   return new Promise(async (resolve) => {
     try {
       if (!tweet) {
@@ -14,8 +19,6 @@ module.exports = (tweet) => {
         resolve()
       }
 
-      const mentioning_id = tweet.id_str
-      const mentioning_user = tweet.user.screen_name
       let original_id = tweet.in_reply_to_status_id_str
       let original_user = tweet.in_reply_to_screen_name
 
@@ -29,8 +32,6 @@ module.exports = (tweet) => {
       if (mentioning_user == 'get_altText') {
         resolve()
       }
-
-      let content = `@${mentioning_user} `
 
       const original_tweet = await getTweet(original_id)
 
@@ -68,9 +69,14 @@ module.exports = (tweet) => {
       resolve()
     } catch (err) {
       console.log(err)
-      resolve(
-        'There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!'
-      )
+      if (err.length === 1) {
+        resolve(content + err[0].message)
+      } else {
+        resolve(
+          content +
+            'There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!'
+        )
+      }
     }
   })
 }
