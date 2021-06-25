@@ -20,8 +20,9 @@ module.exports = (tw, original_user) => {
     }
   }
 
+  // Twitter returns the string "null" when alt text is not present
   if (alt === "null") {
-   alt = "There is no alt text for this image, I'm sorry." 
+    alt = "There is no alt text for this image, I'm sorry." 
   }
   
   return alt;
