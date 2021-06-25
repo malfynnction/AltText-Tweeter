@@ -20,5 +20,9 @@ module.exports = (tw, original_user) => {
     }
   }
 
-  return alt.replace(/null/g, "There is no alt text for this image, I'm sorry.")
+  if (alt === "null") {
+   alt = "There is no alt text for this image, I'm sorry." 
+  }
+  
+  return alt;
 }
