@@ -7,26 +7,25 @@ const getTweet = require('./get-tweet')
 const Twitter = new TwitterP(keys)
 
 Twitter.stream('statuses/filter', { track: '@get_altText' }, function (stream) {
-  stream.on('data', (broken_tweet) => {
-    const mentioning_id = broken_tweet.id_str
-    const mentioning_user = broken_tweet.user.screen_name
+  stream.on('data', (brokenTweet) => {
+    const mentioningTweetId = brokenTweet.id_str
+    const mentioningUsername = brokenTweet.user.screen_name
 
-    getTweet(mentioning_id).then((tweet) => {
-      getReplyText(tweet)
-        .then((reply) => {
-          if (reply && reply.length > 0) {
-            sendTweet(reply, mentioning_id, mentioning_user)
-          }
-        })
-        .catch((err) => console.error(err))
-    })
+    getTweet(mentioningTweetId)
+      .then(getReplyText)
+      .then((reply) => {
+        if (reply && reply.length > 0) {
+          sendTweet(reply, mentioningTweetId, mentioningUsername)
+        }
+      })
+      .catch((err) => console.error(err))
 
-    stream.on('error', function (err) {
+    stream.on('error', (err) => {
       console.log(err)
     })
   })
 
-  stream.on('error', function (err) {
+  stream.on('error', (err) => {
     console.log(err)
   })
 })

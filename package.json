@@ -7,10 +7,13 @@
     "twitter": "^1.7.1"
   },
   "devDependencies": {
-    "ava": "^3.12.1"
+    "ava": "^3.12.1",
+    "eslint": "^8.9.0",
+    "eslint-plugin-node": "^11.1.0"
   },
   "scripts": {
-    "test": "ava"
+    "test": "ava",
+    "lint": "eslint '*.js'"
   },
   "repository": {
     "type": "git",

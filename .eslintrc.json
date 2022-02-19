@@ -1,0 +1,18 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true
+  },
+  "extends": [
+    "plugin:node/recommended",
+    "eslint:recommended"
+  ],
+  "rules": {
+    // allow import/require of local, unpublished modules
+    "node/no-unpublished-require": "off"
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  }
+}

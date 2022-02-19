@@ -3,32 +3,35 @@ const keys = require('./keys')
 
 const Twitter = new TwitterP(keys)
 
-const tweetThis = (content, toriginal_id, mentioning_user) => {
+const tweetThis = (content, inReplyToTweetId, mentioningUsername) => {
   if (content.length <= 280) {
-    const reply = { status: content, in_reply_to_status_id: toriginal_id }
-    Twitter.post('statuses/update', reply, function (err, tweet) {
+    const reply = { status: content, in_reply_to_status_id: inReplyToTweetId }
+    Twitter.post('statuses/update', reply, (err) => {
       if (err) {
         console.log(err)
       }
     })
   } else {
-    const cont_arr = content.split(' ')
+    const contentWords = content.split(' ')
     let part = ''
 
-    while (cont_arr.length > 0 && part.length + cont_arr[0].length <= 279) {
-      part += cont_arr[0] + ' '
-      cont_arr.splice(0, 1)
+    while (
+      contentWords.length > 0 &&
+      part.length + contentWords[0].length <= 279
+    ) {
+      part += contentWords[0] + ' '
+      contentWords.splice(0, 1)
     }
 
-    const reply = { status: part, in_reply_to_status_id: toriginal_id }
+    const reply = { status: part, in_reply_to_status_id: inReplyToTweetId }
     Twitter.post('statuses/update', reply, function (err, tweet) {
       if (err) {
         console.log(err)
       } else {
         tweetThis(
-          `@${mentioning_user} ${cont_arr.join(' ')}`,
+          `@${mentioningUsername} ${contentWords.join(' ')}`,
           tweet.id_str,
-          mentioning_user
+          mentioningUsername
         )
       }
     })

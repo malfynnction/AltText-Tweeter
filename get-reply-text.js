@@ -1,82 +1,80 @@
 const getTweet = require('./get-tweet')
-const read = require('./read-alt-text')
+const readAltText = require('./read-alt-text')
 
-module.exports = (tweet) => {
-  const mentioning_id = tweet.id_str
-  const mentioning_user = tweet.user.screen_name
+module.exports = async (tweet) => {
+  const mentioningTweetId = tweet.id_str
+  const mentioningUsername = tweet.user.screen_name
 
-  let content = `@${mentioning_user} `
+  let content = `@${mentioningUsername} `
 
-  return new Promise(async (resolve) => {
-    try {
-      if (!tweet) {
-        console.log('🚨This should not happen🚨')
-        throw 'No tweet found'
-      }
+  try {
+    if (!tweet) {
+      console.log('🚨This should not happen🚨')
+      throw 'No tweet found'
+    }
 
-      // do not reply to retweets
-      if (typeof tweet.retweeted_status !== 'undefined') {
-        resolve()
-      }
+    // do not reply to retweets
+    if (typeof tweet.retweeted_status !== 'undefined') {
+      return
+    }
 
-      let original_id = tweet.in_reply_to_status_id_str
-      let original_user = tweet.in_reply_to_screen_name
+    let originalTweetId = tweet.in_reply_to_status_id_str
+    let originalUsername = tweet.in_reply_to_screen_name
 
-      //ppl posting the pic and triggering the bot within the same tweet
-      if (original_id == null) {
-        original_id = mentioning_id
-        original_user = mentioning_user
-      }
+    // ppl posting the pic and triggering the bot within the same tweet
+    if (originalTweetId == null) {
+      originalTweetId = mentioningTweetId
+      originalUsername = mentioningUsername
+    }
 
-      //pls no loops of death!
-      if (mentioning_user == 'get_altText') {
-        resolve()
-      }
+    // pls no loops of death!
+    if (mentioningUsername == 'get_altText') {
+      return
+    }
 
-      const original_tweet = await getTweet(original_id)
+    const originalTweet = await getTweet(originalTweetId)
 
-      //media in the original tweet
+    // media in the original tweet
+    if (
+      originalTweet.extended_entities &&
+      originalTweet.extended_entities.media
+    ) {
+      content += readAltText(originalTweet, originalUsername)
+      return content
+    }
+
+    // media in the triggering tweet
+    if (tweet.extended_entities && tweet.extended_entities.media) {
+      content += readAltText(tweet, mentioningUsername)
+      return content
+    }
+
+    // in the quoted tweet?
+    if (tweet.is_quote_status) {
+      const quotedTweet = await getTweet(tweet.quoted_status_id_str)
+      // media in the quoted tweet
       if (
-        original_tweet.extended_entities &&
-        original_tweet.extended_entities['media']
+        quotedTweet.extended_entities &&
+        quotedTweet.extended_entities.media
       ) {
-        content += read(original_tweet, original_user)
-        resolve(content)
-      }
-
-      //media in the triggering tweet
-      if (tweet.extended_entities && tweet.extended_entities['media']) {
-        content += read(tweet, mentioning_user)
-        resolve(content)
-      }
-
-      //in the quoted tweet?
-      if (tweet.is_quote_status) {
-        const quoted_tweet = await getTweet(tweet.quoted_status_id_str)
-        //media in the quoted tweet
-        if (
-          quoted_tweet.extended_entities &&
-          quoted_tweet.extended_entities['media']
-        ) {
-          content += read(quoted_tweet, quoted_tweet.user.screen_name)
-          resolve(content)
-        } else {
-          //no media in quoted tweet => no tweet
-          resolve()
-        }
-      }
-
-      resolve()
-    } catch (err) {
-      console.log(err)
-      if (err.length === 1) {
-        resolve(content + err[0].message.replace('you are', 'I am'))
+        content += readAltText(quotedTweet, quotedTweet.user.screen_name)
+        return content
       } else {
-        resolve(
-          content +
-            'There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!'
-        )
+        // no media in quoted tweet => no tweet
+        return
       }
     }
-  })
+
+    return
+  } catch (err) {
+    console.log(JSON.stringify(err))
+    if (err.length === 1) {
+      return content + err[0].message.replace('you are', 'I am')
+    } else {
+      return (
+        content +
+        'There has been an error while trying to read the alt text, please try again later – @malfynnction, you should probably look into this!'
+      )
+    }
+  }
 }

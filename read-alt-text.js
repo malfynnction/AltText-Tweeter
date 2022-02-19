@@ -1,31 +1,23 @@
-module.exports = (tw, original_user) => {
-  let alt = ''
+const altForMedium = (medium) =>
+  medium.ext_alt_text === null
+    ? "There is no alt text for this image, I'm sorry."
+    : medium.ext_alt_text
 
+module.exports = (tweet) => {
+  const media = tweet.extended_entities.media
+
+  // unfortunately, it is impossible to add alt texts to videos
   const supportedMediaTypes = ['photo', 'animated_gif']
+  const mediaType = media[0].type
 
-  //unfortunately, it is impossible to add alt texts to videos or gifs
-  if (!supportedMediaTypes.includes(tw.extended_entities.media[0].type)) {
-    alt =
-      'This is a ' +
-      tw.extended_entities.media[0].type +
-      ". Unfortunately, twitter doesn't allow to add alt texts for " +
-      tw.extended_entities.media[0].type +
-      's yet.'
+  if (!supportedMediaTypes.includes(mediaType)) {
+    return `This is a ${mediaType}. Unfortunately, twitter doesn't allow to add alt texts for ${mediaType}s yet.`
+  } else if (media.length === 1) {
+    return altForMedium(media[0])
   } else {
-    const media = tw.extended_entities['media']
-    for (let i = 0; i < media.length; i++) {
-      const mediumAlt =
-        media[i].ext_alt_text === null
-          ? "There is no alt text for this image, I'm sorry."
-          : media[i].ext_alt_text
-
-      if (media.length > 1) {
-        alt += i + 1 + '. Picture: ' + mediumAlt + '\n'
-      } else {
-        alt += mediumAlt
-      }
-    }
+    return media.reduce(
+      (alt, medium, i) => alt + `${i + 1}. Picture: ${altForMedium(medium)}\n`,
+      ''
+    )
   }
-
-  return alt;
 }
