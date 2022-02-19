@@ -14,15 +14,17 @@ module.exports = (tw, original_user) => {
   } else {
     const media = tw.extended_entities['media']
     for (let i = 0; i < media.length; i++) {
-      if (media.length > 1)
-        alt += i + 1 + '. Picture: ' + media[i].ext_alt_text + '\n'
-      else alt += media[i].ext_alt_text
-    }
-  }
+      const mediumAlt =
+        media[i].ext_alt_text === null
+          ? "There is no alt text for this image, I'm sorry."
+          : media[i].ext_alt_text
 
-  // Twitter returns the string "null" when alt text is not present
-  if (alt === "null") {
-    alt = "There is no alt text for this image, I'm sorry." 
+      if (media.length > 1) {
+        alt += i + 1 + '. Picture: ' + mediumAlt + '\n'
+      } else {
+        alt += mediumAlt
+      }
+    }
   }
 
   return alt;
