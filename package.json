@@ -24,5 +24,10 @@
   "bugs": {
     "url": "https://github.com/malfynnction/AltText-Tweeter/issues"
   },
-  "homepage": "https://github.com/malfynnction/AltText-Tweeter#readme"
+  "homepage": "https://github.com/malfynnction/AltText-Tweeter#readme",
+  "ava": {
+    "files": [
+      "test/**/*"
+    ]
+  }
 }

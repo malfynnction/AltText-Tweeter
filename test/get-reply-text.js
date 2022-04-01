@@ -1,6 +1,6 @@
 const test = require('ava')
-const testTweets = require('./test-tweets.json')
-const getReplyText = require('./get-reply-text')
+const testTweets = require('../test-tweets.json')
+const getReplyText = require('../lib/get-reply-text')
 
 const noAltText = "There is no alt text for this image, I'm sorry."
 const video =

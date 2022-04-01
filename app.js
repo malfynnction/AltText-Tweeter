@@ -1,8 +1,8 @@
 const TwitterP = require('twitter')
 const keys = require('./keys')
-const sendTweet = require('./send-tweet')
-const getReplyText = require('./get-reply-text')
-const getTweet = require('./get-tweet')
+const sendTweet = require('./lib/send-tweet')
+const getReplyText = require('./lib/get-reply-text')
+const getTweet = require('./lib/get-tweet')
 
 const Twitter = new TwitterP(keys)
 
