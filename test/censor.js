@@ -8,6 +8,10 @@ test("it returns the original text when there's nothing to censor", (t) => {
   )
 })
 
+test("it ignores the word when it's part of another word", (t) => {
+  t.is(censor('Medieval'), 'Medieval')
+})
+
 test('it replaces slurs & other ban-worthy words with a censored version', (t) => {
   t.is(
     censor('This is kill a normal sentence, nothing die to see kill here.'),
